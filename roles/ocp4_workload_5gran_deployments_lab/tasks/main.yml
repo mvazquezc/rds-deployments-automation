@@ -7,29 +7,17 @@
     ansible_ssh_common_args: "-o ConnectionAttempts=20"
 
 - name: Running Pre Workload Tasks
-  include_tasks:
-    file: ./pre_workload.yml
-    apply:
-      become: "{{ become_override | bool }}"
+  ansible.builtin.include_tasks: ./pre_workload.yml
   when: ACTION == "create" or ACTION == "provision"
 
 - name: Running Workload Tasks
-  include_tasks:
-    file: ./workload.yml
-    apply:
-      become: "{{ become_override | bool }}"
+  ansible.builtin.include_tasks: ./workload.yml
   when: ACTION == "create" or ACTION == "provision"
 
 - name: Running Post Workload Tasks
-  include_tasks:
-    file: ./post_workload.yml
-    apply:
-      become: "{{ become_override | bool }}"
+  ansible.builtin.include_tasks: ./post_workload.yml
   when: ACTION == "create" or ACTION == "provision"
 
 - name: Running Workload removal Tasks
-  include_tasks:
-    file: ./remove_workload.yml
-    apply:
-      become: "{{ become_override | bool }}"
+  ansible.builtin.include_tasks: ./remove_workload.yml
   when: ACTION == "destroy" or ACTION == "remove"

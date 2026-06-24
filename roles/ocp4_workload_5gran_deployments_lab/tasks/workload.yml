@@ -681,4 +681,3 @@
 - name: workload tasks complete
   debug:
     msg: "Workload Tasks completed successfully."
-  when: not silent|bool

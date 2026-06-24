@@ -408,4 +408,3 @@
 - name: Workload tasks complete (Hub and ArgoCD ready; user deploys MNO)
   debug:
     msg: "Workload Tasks completed successfully."
-  when: not silent|bool
