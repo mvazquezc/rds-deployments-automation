@@ -18,6 +18,14 @@ run_all_mirrors() {
 
     echo "=== Attempt ${attempt}/${MAX_RETRIES}: Starting full oc-mirror sequence ==="
 
+    # Clear logs at the start of each retry attempt to avoid detecting old errors
+    if [ $attempt -gt 1 ]; then
+        echo "Clearing previous attempt logs..."
+        > /root/mirroring-418.log
+        > /root/mirroring-419.log
+        > /root/mirroring-420.log
+    fi
+
     # Mirror 4.18
     echo "--- Mirroring OCP 4.18 ---"
     oc-mirror --parallel-images=10 --v2 \
