@@ -1,0 +1,22 @@
+---
+namespace: rhpds
+name: rds_deployments
+version: 1.0.0
+readme: README.md
+authors:
+  - Tyrell Reddy <treddy@redhat.com>
+  - Mario Vazquez Cebrian <mavazque@redhat.com>
+description: Ansible roles for 5G RDS Deployments (Core and RAN) on OpenShift
+license:
+  - Apache-2.0
+tags:
+  - 5g
+  - ran
+  - core
+  - rds
+  - openshift
+  - cnv
+repository: https://github.com/rhpds/rds-deployments-automation
+documentation: https://github.com/rhpds/rds-deployments-automation
+homepage: https://github.com/rhpds/rds-deployments-automation
+issues: https://github.com/rhpds/rds-deployments-automation/issues
