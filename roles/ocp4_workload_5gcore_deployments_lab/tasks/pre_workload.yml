@@ -414,26 +414,19 @@
   loop: "{{ imageset_config_files }}"
   when: run_oc_mirror | default(true) | bool
 
-# oc-mirror runs sequentially (418→419→420) in a single async job to avoid
-# the port 55000 conflict that occurs when multiple instances run in parallel.
+# Copy oc-mirror retry script to bastion
+- name: Copy oc-mirror retry script to bastion
+  ansible.builtin.copy:
+    src: run-oc-mirror-with-retry.sh
+    dest: /root/run-oc-mirror-with-retry.sh
+    mode: '0755'
+  when: run_oc_mirror | default(true) | bool
+
+# oc-mirror runs sequentially (418→419→420) with built-in retry logic
+# Script retries entire sequence up to 3 times if any mirror fails
 - name: Mirror OCP 4.18/4.19/4.20 releases and operators to local registry (async)
   ansible.builtin.shell:
-    cmd: >-
-      oc-mirror --parallel-images=10 --v2
-      --workspace file:///root/workspace-418/
-      --config=/root/imageset-mirror-core-418.yaml
-      docker://{{ lab_registry_host }}
-      | tee -a /root/mirroring-418.log &&
-      oc-mirror --parallel-images=10 --v2
-      --workspace file:///root/workspace-419/
-      --config=/root/imageset-mirror-core-419.yaml
-      docker://{{ lab_registry_host }}
-      | tee -a /root/mirroring-419.log &&
-      oc-mirror --parallel-images=10 --v2
-      --workspace file:///root/workspace-420/
-      --config=/root/imageset-mirror-core-420.yaml
-      docker://{{ lab_registry_host }}
-      | tee -a /root/mirroring-420.log
+    cmd: /root/run-oc-mirror-with-retry.sh {{ lab_registry_host }}
   register: oc_mirror_async_result
   async: "{{ oc_mirror_timeout | default(7200) }}"
   poll: 0
@@ -941,7 +934,7 @@
       delay: 10
   when: download_rhcos_isos|bool
 
-# oc-mirror was launched async in pre_workload.yml. Wait here before Hub install needs the images.
+# oc-mirror was launched async with built-in retry logic. Wait here before Hub install needs the images.
 - name: Wait for oc-mirror sequence to complete
   ansible.builtin.async_status:
     jid: "{{ oc_mirror_async_result.ansible_job_id }}"
@@ -949,11 +942,14 @@
   until: oc_mirror_job_result.finished
   retries: "{{ ((oc_mirror_timeout | default(7200)) / 30) | int }}"
   delay: 30
-  failed_when: >
-    oc_mirror_job_result.failed or
-    'some errors occurred during the mirroring' in
-    ((oc_mirror_job_result.stdout | default('')) + (oc_mirror_job_result.stderr | default('')))
   when: run_oc_mirror | default(true) | bool
+
+- name: Fail if oc-mirror script failed after retries
+  ansible.builtin.fail:
+    msg: "oc-mirror failed after 3 retry attempts. Check logs: /root/mirroring-*.log"
+  when:
+    - run_oc_mirror | default(true) | bool
+    - oc_mirror_job_result.rc | default(0) != 0
 
 - name: Show last 25 lines of each oc-mirror log
   ansible.builtin.shell:
