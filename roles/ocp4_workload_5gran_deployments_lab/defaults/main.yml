@@ -30,8 +30,8 @@ hypervisor_supported_distributions: ['RedHat', 'CentOS', 'Fedora']
 lab_hub_vm_cpus: 16
 lab_hub_vm_memory: 48000
 lab_hub_vm_disk: 200
-lab_sno_vm_cpus: 12
-lab_sno_vm_memory: 32000
+lab_sno_vm_cpus: 16
+lab_sno_vm_memory: 36000
 lab_sno_vm_disk: 200
 extra_disk_libvirt_images: true
 disconnected_catalog_image: infra.5g-deployment.lab:8443/redhat/redhat-operator-index:v4.21-1777899690
