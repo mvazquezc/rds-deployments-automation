@@ -755,6 +755,12 @@
     - {regexp: "<CHANGEME_LAB_VERSION>", value: "{{ lab_release }}"}
     - {regexp: "<CHANGEME_HYPERVISOR_PUBLIC_HOSTNAME>", value: "{{ bastion_public_hostname }}"}
 
+- name: Ensure showroom folder has the right perms
+  ansible.builtin.file:
+    path: /opt/showroom
+    state: directory
+    mode: "0755"
+
 - name: Configure showroom - Download showroom services and configurations
   ansible.builtin.get_url:
     url: "{{ item.url }}"
