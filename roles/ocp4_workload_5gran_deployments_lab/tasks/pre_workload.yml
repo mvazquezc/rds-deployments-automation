@@ -400,7 +400,7 @@
 
 - name: Download S3 mc client
   ansible.builtin.get_url:
-    url: https://dl.min.io/client/mc/release/linux-amd64/mc
+    url: "{{ mc_binary }}"
     dest: /usr/bin/mc
     mode: "0744"
 

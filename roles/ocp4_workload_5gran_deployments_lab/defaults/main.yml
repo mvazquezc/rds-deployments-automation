@@ -8,6 +8,7 @@ student_name: "lab-user"
 # yamllint disable rule:line-length
 kcli_rpm: "https://github.com/{{ repo_user }}/5g-ran-deployments-on-ocp-lab/releases/download/{{ lab_release }}/kcli-99.0.0.git.202602040650.86cacd3-0.el9.x86_64.rpm"
 lab_repo: "https://github.com/{{ repo_user }}/5g-ran-deployments-on-ocp-lab.git"
+mc_binary: "https://github.com/{{ repo_user }}/5g-ran-deployments-on-ocp-lab/releases/download/{{ lab_release }}/mc"
 # yamllint enable rule:line-length
 ocp4_major_release: "4.21"
 ocp4_minor_release: "4.21.10"
